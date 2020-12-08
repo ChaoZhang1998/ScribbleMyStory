@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="chaoZHANG">
+    <title>Scribble My Story</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/main.css">
+
+    <script src="./js/libs/p5.min.js"></script>
+    <script src="./js/libs/p5.sound.js"></script>
+    <script src="./js/libs/p5.speech.js"></script>
+    <script src="./js/libs/compromise.min.js"></script>
+    <script src="./js/libs/compromise-numbers.min.js"></script>
+    <script src="./js/libs/rita-full.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+</head>
+
+<body>
+    <header class="header-wrapper">
+        <div id="message" class="header-text">Scribble My Story</div>
+
+        <div class="header-buttons">
+            <button id="record-btn" class="button button-gray">
+                <span class="icon icon-record"></span>
+            </button>
+            <button id="clear-btn" class="button button-gray">
+                <span class="icon icon-clear"></span>
+            </button>
+            <button id="save-btn" class="button button-gray">
+                <span class="icon icon-printer"></span>
+            </button>
+        </div>
+    </header>
+
+    <div id="canvas-wrapper"></div>
+
+    <div id="story-wrapper">
+        <div id="machine-story">
+            <div id="machine-story-primary">
+                <p>...</p>
+                <!-- <p>A little piggy was walking in the garden. </p>
+                <p>He saw his neighbors, Mr. Monkey and Mr. Lion, waiting for a bus.</p>
+                <p>At that moment, Mr. Dog drove by with a truck full of flowers.</p>
+                <p>The fragrance of which was everywhere.</p>
+                <p>The little pig felt very happy.</p> -->
+            </div>
+        </div>
+    </div>
+
+    <div id="speechbubble-wrapper">
+        <div id="machine-speechbubble">
+            <div id="machine-speechbubble-secondary"></div>
+            <div id="machine-speechbubble-primary">Get stucked? Try to press the IDEA button or ENTER!</div>
+        </div>
+        <div id="machine-speechbubble-tip"></div>
+    </div>
+
+    <script src="./js/sketch.js"></script>
+    <script src="./js/models.js"></script>
+    <script src="./js/parse-text.js"></script>
+</body>
+
+</html>
