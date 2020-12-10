@@ -441,7 +441,7 @@ function keyReleased() {
             reader.onloadend = function () {
                 base64data = reader.result;
                 //console.log(base64data)
-                $.post('https://papablog.xyz:5000/base64', {
+                $.post('https://papablog.xyz:5000/chinese', {
                     base64data
                 }, function (res) {
                     console.log(res);
