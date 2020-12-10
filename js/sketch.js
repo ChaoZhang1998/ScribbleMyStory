@@ -49,6 +49,33 @@ let speaker;
 
 function preload() {
     category = loadJSON("./js/category.json");
+
+    // let item_a = model_list[Math.floor(Math.random() * model_list.length)];
+    // let item_b = model_list[Math.floor(Math.random() * model_list.length)];
+    // console.log(item_a);
+    // console.log(item_b);
+
+    let item_a = 'flower';
+    let item_b = 'book';
+    ml5.sketchRNN(item_a);
+    ml5.sketchRNN(item_b);
+
+    objects = [{
+        "name": item_a,
+        "num": 1,
+        "pos": ""
+    }, {
+        "name": item_b,
+        "num": 1,
+        "pos": ""
+    }];
+
+    rec.push({
+        "type": 1,
+        "models": [],
+        "description": '',
+        "objects": objects
+    });
 }
 
 function setup() {
@@ -84,6 +111,8 @@ function setup() {
     all_object = sky_object.concat(air_object, floor_object);
 
     initialRec();
+
+    drawObjects();
 }
 
 function initialRec() {
@@ -160,7 +189,7 @@ function idea() {
     });
 
     idea_state = true;
-    
+
     drawObjects();
 }
 
