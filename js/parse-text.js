@@ -22,6 +22,11 @@ function parseText(text) {
             let name = doc.match("[<num>(#Value|#Possessive)?] #Adjective+? [<name>#Noun] on? the? [<position>(left|right)?]", "name").text();
             let num = doc.match("[<num>(#Value|#Possessive)?] #Adjective+? [<name>#Noun] on? the? [<position>(left|right)?]", "num").text();
             let pos = doc.match("[<num>(#Value|#Possessive)?] #Adjective+? [<name>#Noun] on? the? [<position>(left|right)?]", "position").text();
+
+            if (model_list.indexOf(name) === -1) {
+                continue;
+            }
+
             objects[i] = {
                 "name": name,
                 "num": parseNum(num),

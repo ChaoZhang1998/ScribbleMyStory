@@ -49,6 +49,7 @@ let is_recording = false;
 
 function preload() {
     category = loadJSON("./js/category.json");
+    // ml5.sketchRNN('flower');
 }
 
 function setup() {
@@ -104,6 +105,12 @@ function idea() {
         "num": 1,
         "pos": ""
     }];
+
+    // objects = [{
+    //     "name": 'flower',
+    //     "num": 1,
+    //     "pos": ""
+    // }];
 
     rec.push({
         "type": 1,
@@ -246,7 +253,7 @@ function clearTips() {
     image(buffer, 0, 0);
     pg.image(buffer, 0, 0);
 
-    let txt = "Get stucked? Try to press the IDEA button or ENTER!";
+    let txt = "Get stuck? Try to press the IDEA button or ENTER!";
     tip.textContent = txt;
 }
 

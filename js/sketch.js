@@ -108,14 +108,16 @@ function initialRec() {
         appendStory(command + '.');
         objects = parseText(command);
 
-        rec.push({
-            "type": 0,
-            "models": [],
-            "description": command,
-            "objects": objects
-        });
+        if (objects.length != 0) {
+            rec.push({
+                "type": 0,
+                "models": [],
+                "description": command,
+                "objects": objects
+            });
 
-        drawObjects(objects);
+            drawObjects(objects);
+        }
     };
 
     recognition.onspeechend = function () {
@@ -149,11 +151,6 @@ function idea() {
         "num": 1,
         "pos": ""
     }];
-    // objects = [{
-    //     "name": 'flower',
-    //     "num": 1,
-    //     "pos": ""
-    // }];
 
     rec.push({
         "type": 1,
@@ -163,7 +160,7 @@ function idea() {
     });
 
     idea_state = true;
-
+    
     drawObjects();
 }
 
@@ -176,19 +173,25 @@ function drawObjects() {
     }
 
     object_pointer = 0;
-    model_name = objects[0].name;
-    drawDoolde(objects[0]);
+    model_name = objects[object_pointer].name;
+    while (model_list.indexOf(model_name) === -1) {
+        console.log("no model found.");
+
+        object_pointer++;
+        if (object_pointer >= objects.length) break;
+
+        model_name = objects[object_pointer].name;
+    }
+
+    if (object_pointer < objects.length) {
+        drawSingleObject(objects[object_pointer]);
+    }
 }
 
-function drawDoolde(object) {
+function drawSingleObject(object) {
     noLoop();
     let name = object.name;
     let pos = object.pos;
-
-    model = ml5.sketchRNN(name);
-    rec[rec.length - 1].models.push(model);
-
-    console.log(rec);
 
     let right_offset, left_offset;
     if (!pos) {
@@ -231,10 +234,15 @@ function drawDoolde(object) {
         console.log(x, y);
     }
 
-    // Generate the first stroke path
-    model.reset();
-    model.generate(gotStroke);
-    loop();
+    model = ml5.sketchRNN(name, function () {
+        rec[rec.length - 1].models.push(model);
+        console.log(rec);
+
+        // Generate the first stroke path
+        model.reset();
+        model.generate(gotStroke);
+        loop();
+    });
 }
 
 function is_in_bounding_box(x, y) {
@@ -265,7 +273,7 @@ function clearTips() {
     image(buffer, 0, 0);
     pg.image(buffer, 0, 0);
 
-    let txt = "Get stucked? Try to press the IDEA button or ENTER!";
+    let txt = "Get stuck? Try to press the IDEA button or ENTER!";
     tip.textContent = txt;
 }
 
@@ -401,13 +409,21 @@ function draw() {
             counts[object_pointer]--;
             if (counts[object_pointer] === 0) {
                 object_pointer++;
+                previous_pen = 'down';
                 if (object_pointer < objects.length) {
                     model_name = objects[object_pointer].name;
-                    previous_pen = 'down';
+                    while (model_list.indexOf(model_name) === -1) {
+                        console.log("no model found.");
 
-                    drawDoolde(objects[object_pointer]);
-                } else {
-                    previous_pen = 'down';
+                        object_pointer++;
+                        if (object_pointer >= objects.length) break;
+
+                        model_name = objects[object_pointer].name;
+                    }
+
+                    if (object_pointer < objects.length) {
+                        drawSingleObject(objects[object_pointer]);
+                    }
                 }
             } else {
                 previous_pen = 'down';
