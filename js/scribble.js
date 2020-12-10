@@ -122,10 +122,15 @@ function parseObjects(res) {
     let name = res.objects;
     let number = res.numbers;
     for (let i = 0; i < name.length; i++) {
+        if (model_list.indexOf(name[i]) === -1) {
+            continue;
+        }
+
         let object = {};
         object.name = name[i];
         object.num = number[i];
         object.pos = "";
+        
         objects.push(object);
     }
 
@@ -141,19 +146,25 @@ function drawObjects() {
     }
 
     object_pointer = 0;
-    model_name = objects[0].name;
-    drawSingleObject(objects[0]);
+    model_name = objects[object_pointer].name;
+    while(model_list.indexOf(model_name) === -1) {
+        console.log("no model found.");
+
+        object_pointer++;
+        if (object_pointer >= objects.length) break;
+
+        model_name = objects[object_pointer].name;
+    }
+
+    if (object_pointer < objects.length) {
+        drawSingleObject(objects[object_pointer]);
+    }
 }
 
 function drawSingleObject(object) {
     noLoop();
     let name = object.name;
     let pos = object.pos;
-
-    model = ml5.sketchRNN(name);
-    rec[rec.length - 1].models.push(model);
-
-    console.log(rec);
 
     let right_offset, left_offset;
     if (!pos) {
@@ -196,10 +207,15 @@ function drawSingleObject(object) {
         console.log(x, y);
     }
 
-    // Generate the first stroke path
-    model.reset();
-    model.generate(gotStroke);
-    loop();
+    model = ml5.sketchRNN(name, function () {
+        rec[rec.length - 1].models.push(model);
+        console.log(rec);
+
+        // Generate the first stroke path
+        model.reset();
+        model.generate(gotStroke);
+        loop();
+    });
 }
 
 function is_in_bounding_box(x, y) {
@@ -366,13 +382,21 @@ function draw() {
             counts[object_pointer]--;
             if (counts[object_pointer] === 0) {
                 object_pointer++;
+                previous_pen = 'down';
                 if (object_pointer < objects.length) {
                     model_name = objects[object_pointer].name;
-                    previous_pen = 'down';
+                    while(model_list.indexOf(model_name) === -1) {
+                        console.log("no model found.");
+                
+                        object_pointer++;
+                        if (object_pointer >= objects.length) break;
 
-                    drawSingleObject(objects[object_pointer]);
-                } else {
-                    previous_pen = 'down';
+                        model_name = objects[object_pointer].name;
+                    }
+                
+                    if (object_pointer < objects.length) {
+                        drawSingleObject(objects[object_pointer]);
+                    }
                 }
             } else {
                 previous_pen = 'down';
@@ -441,7 +465,7 @@ function keyReleased() {
             reader.onloadend = function () {
                 base64data = reader.result;
                 //console.log(base64data)
-                $.post('https://papablog.xyz:5000/chinese', {
+                $.post('https://papablog.xyz:5000/english', {
                     base64data
                 }, function (res) {
                     console.log(res);
