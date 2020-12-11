@@ -158,7 +158,8 @@ function idea() {
     objects = [{
         "name": item,
         "num": 1,
-        "pos": ""
+        "pos": "",
+        "color": "red"
     }];
 
     rec.push({
@@ -359,6 +360,7 @@ function draw() {
     if (mouseIsPressed) {
         clearTips();
 
+        styleSet();
         line(mouseX, mouseY, pmouseX, pmouseY);
         pg.line(mouseX, mouseY, pmouseX, pmouseY);
         buffer.line(mouseX, mouseY, pmouseX, pmouseY);
@@ -382,6 +384,7 @@ function draw() {
             }
 
             if (previous_pen == 'down') {
+                styleSet();
                 line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
                 pg.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
                 buffer.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
@@ -395,8 +398,7 @@ function draw() {
         } else {
             // If the pen is down, draw a line
             if (previous_pen == 'down') {
-                styleSet();
-
+                styleSet(objects[object_pointer].color);
                 line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
                 pg.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
                 buffer.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
@@ -518,7 +520,8 @@ function sketchRNNStart() {
     objects = [{
         "name": model_name,
         "num": 2,
-        "pos": ""
+        "pos": "",
+        "color": "blue"
     }];
 
     rec.push({
@@ -563,25 +566,25 @@ function sketchRNNStart() {
     personDrawingModel.generate(seedPath, gotStroke);
 }
 
-function styleSet() {
+function styleSet(c = "black") {
     noFill();
-    stroke(0);
+    stroke(c);
     strokeWeight(3);
 
     pg.noFill();
-    pg.stroke(0);
+    pg.stroke(c);
     pg.strokeWeight(3);
 
     buffer.noFill();
-    buffer.stroke(0);
+    buffer.stroke(c);
     buffer.strokeWeight(3);
 
     output.noFill();
-    output.stroke(0);
+    output.stroke(c);
     output.strokeWeight(3);
 
     if (idea_state) {
-        stroke('red');
-        pg.stroke('red');
+        buffer.stroke('black');
+        output.stroke('black');
     }
 }

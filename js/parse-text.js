@@ -8,7 +8,8 @@ function parseText(text) {
         objects = [{
             "name": doc.text(),
             "num": 1,
-            "pos": ""
+            "pos": "",
+            "color": "blue"
         }];
 
         console.log(objects);
@@ -30,7 +31,8 @@ function parseText(text) {
             objects[i] = {
                 "name": name,
                 "num": parseNum(num),
-                "pos": pos
+                "pos": pos,
+                "color": "blue"
             }
         }
 
