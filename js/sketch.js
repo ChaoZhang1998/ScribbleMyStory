@@ -2,7 +2,8 @@ let canvas;
 let pg; // For resize window
 let buffer; // For idea reload
 let output; // For output
-let record_btn, idea_btn, clear_btn, save_btn;
+
+let record_btn, clear_btn, save_btn;
 let message = document.querySelector('#message');
 let tip = document.querySelector('#machine-speechbubble-primary');
 let story_container = document.querySelector('#machine-story-primary');
@@ -45,37 +46,16 @@ let sky_object, air_object, floor_object;
 
 let idea_state = false;
 
-let speaker;
+let speaker; // p5js speaker
+
+let seedPath = [];
+let seedPoints = [];
+let personDrawing = false;
+let personDrawingModel;
 
 function preload() {
     category = loadJSON("./js/category.json");
-
-    // let item_a = model_list[Math.floor(Math.random() * model_list.length)];
-    // let item_b = model_list[Math.floor(Math.random() * model_list.length)];
-    // console.log(item_a);
-    // console.log(item_b);
-
-    let item_a = 'flower';
-    let item_b = 'book';
-    ml5.sketchRNN(item_a);
-    ml5.sketchRNN(item_b);
-
-    objects = [{
-        "name": item_a,
-        "num": 1,
-        "pos": ""
-    }, {
-        "name": item_b,
-        "num": 1,
-        "pos": ""
-    }];
-
-    rec.push({
-        "type": 1,
-        "models": [],
-        "description": '',
-        "objects": objects
-    });
+    personDrawingModel = ml5.sketchRNN('flower');
 }
 
 function setup() {
@@ -112,7 +92,7 @@ function setup() {
 
     initialRec();
 
-    drawObjects();
+    idea();
 }
 
 function initialRec() {
@@ -298,6 +278,12 @@ function bubbleTips() {
     speaker.speak(txt);
 }
 
+function personDrawingTips() {
+    let txt = "I guess you wanna draw a " + model_name + ". Try to say something about it.";
+    tip.textContent = txt;
+    speaker.speak(txt);
+}
+
 function clearTips() {
     image(buffer, 0, 0);
     pg.image(buffer, 0, 0);
@@ -366,117 +352,135 @@ function saveDraw() {
 }
 
 function draw() {
-    record_btn.mousePressed(speech2text);
+    record_btn.mousePressed(sketchRNNStart);
     clear_btn.mousePressed(clearCanvas);
     save_btn.mousePressed(saveDraw);
 
+    if (mouseIsPressed) {
+        clearTips();
+
+        line(mouseX, mouseY, pmouseX, pmouseY);
+        pg.line(mouseX, mouseY, pmouseX, pmouseY);
+        buffer.line(mouseX, mouseY, pmouseX, pmouseY);
+        output.line(mouseX, mouseY, pmouseX, pmouseY);
+
+        seedPoints.push(createVector(mouseX, mouseY));
+    }
+
     // If something new to draw
     if (strokePath) {
-        // If the pen is down, draw a line
-        if (previous_pen == 'down') {
-            noFill();
-            stroke(0);
-            if (idea_state) {
-                stroke('red');
+        if (personDrawing) {
+            if (previous_pen == 'end') {
+                seedPoints = [];
+                strokePath = null;
+                previous_pen = 'down';
+                personDrawingModel.reset();
+
+                personDrawingTips();
+
+                return;
             }
-            strokeWeight(3);
-            line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
 
-            pg.noFill();
-            pg.stroke(0);
-            if (idea_state) {
-                pg.stroke('red');
+            if (previous_pen == 'down') {
+                line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                pg.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                buffer.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                output.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
             }
-            pg.strokeWeight(3);
-            pg.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
-
-            buffer.noFill();
-            buffer.stroke(0);
-            buffer.strokeWeight(3);
-            buffer.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
-
-            output.noFill();
-            output.stroke(0);
-            output.strokeWeight(3);
-            output.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
-        }
-        // Move the pen
-        x += strokePath.dx / 3;
-        y += strokePath.dy / 3;
-
-        // Calcu the bounding box
-        if (x >= max_x) {
-            max_x = x;
-            bounding_box.right_top[0] = x;
-            bounding_box.right_bottom[0] = x;
-        }
-        if (x < min_x) {
-            min_x = x;
-            bounding_box.left_top[0] = x;
-            bounding_box.left_bottom[0] = x;
-        }
-        if (y >= max_y) {
-            max_y = y;
-            bounding_box.left_bottom[1] = y;
-            bounding_box.right_bottom[1] = y;
-        }
-        if (y < min_y) {
-            min_y = y;
-            bounding_box.left_top[1] = y;
-            bounding_box.right_top[1] = y;
-        }
-
-        // The pen state actually refers to the next stroke
-        previous_pen = strokePath.pen;
-
-        // If the drawing is complete
-        if (strokePath.pen !== 'end') {
+            x += strokePath.dx / 3;
+            y += strokePath.dy / 3;
+            previous_pen = strokePath.pen;
             strokePath = null;
-            model.generate(gotStroke);
+            personDrawingModel.generate(gotStroke);
         } else {
-            strokePath = null;
-            counts[object_pointer]--;
-            if (counts[object_pointer] === 0) {
-                object_pointer++;
-                previous_pen = 'down';
-                if (object_pointer < objects.length) {
-                    model_name = objects[object_pointer].name;
-                    while (model_list.indexOf(model_name) === -1) {
-                        console.log("no model found.");
+            // If the pen is down, draw a line
+            if (previous_pen == 'down') {
+                styleSet();
 
-                        object_pointer++;
-                        if (object_pointer >= objects.length) break;
+                line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                pg.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                buffer.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+                output.line(x, y, x + strokePath.dx / 3, y + strokePath.dy / 3);
+            }
+            // Move the pen
+            x += strokePath.dx / 3;
+            y += strokePath.dy / 3;
 
-                        model_name = objects[object_pointer].name;
-                    }
+            // Calcu the bounding box
+            if (x >= max_x) {
+                max_x = x;
+                bounding_box.right_top[0] = x;
+                bounding_box.right_bottom[0] = x;
+            }
+            if (x < min_x) {
+                min_x = x;
+                bounding_box.left_top[0] = x;
+                bounding_box.left_bottom[0] = x;
+            }
+            if (y >= max_y) {
+                max_y = y;
+                bounding_box.left_bottom[1] = y;
+                bounding_box.right_bottom[1] = y;
+            }
+            if (y < min_y) {
+                min_y = y;
+                bounding_box.left_top[1] = y;
+                bounding_box.right_top[1] = y;
+            }
 
-                    if (object_pointer < objects.length) {
-                        drawSingleObject(objects[object_pointer]);
-                    }
-                }
+            // The pen state actually refers to the next stroke
+            previous_pen = strokePath.pen;
+
+            // If the drawing is complete
+            if (previous_pen !== 'end') {
+                strokePath = null;
+                model.generate(gotStroke);
             } else {
-                previous_pen = 'down';
-                drawDoolde(objects[object_pointer]);
+                strokePath = null;
+                counts[object_pointer]--;
+                if (counts[object_pointer] === 0) {
+                    object_pointer++;
+                    previous_pen = 'down';
+                    if (object_pointer < objects.length) {
+                        model_name = objects[object_pointer].name;
+                        while (model_list.indexOf(model_name) === -1) {
+                            console.log("no model found.");
+
+                            object_pointer++;
+                            if (object_pointer >= objects.length) break;
+
+                            model_name = objects[object_pointer].name;
+                        }
+
+                        if (object_pointer < objects.length) {
+                            drawSingleObject(objects[object_pointer]);
+                        }
+                    }
+                } else {
+                    previous_pen = 'down';
+                    drawDoolde(objects[object_pointer]);
+                }
+
+                if (idea_state) {
+                    bubbleTips();
+                    idea_state = false;
+                }
+
+                bounding_box_list.push(bounding_box);
+
+                min_x = 10000;
+                max_x = 0;
+                min_y = 10000;
+                max_y = 0;
+                bounding_box = {
+                    'left_top': [0, 0],
+                    'right_top': [0, 0],
+                    'left_bottom': [0, 0],
+                    'right_bottom': [0, 0]
+                };
             }
-
-            if (idea_state) {
-                bubbleTips();
-                idea_state = false;
-            }
-
-            bounding_box_list.push(bounding_box);
-
-            min_x = 10000;
-            max_x = 0;
-            min_y = 10000;
-            max_y = 0;
-            bounding_box = {
-                'left_top': [0, 0],
-                'right_top': [0, 0],
-                'left_bottom': [0, 0],
-                'right_bottom': [0, 0]
-            };
         }
+
     }
 }
 
@@ -502,4 +506,82 @@ function windowResized() {
 
     resizeCanvas(w, h);
     image(pg, 0, 0);
+}
+
+function sketchRNNStart() {
+    personDrawing = true;
+
+    model_name = model_list[Math.floor(Math.random() * model_list.length)];
+    personDrawingModel = ml5.sketchRNN(model_name);
+    console.log(model_name);
+
+    objects = [{
+        "name": model_name,
+        "num": 2,
+        "pos": ""
+    }];
+
+    rec.push({
+        "type": 1,
+        "models": [],
+        "description": '',
+        "objects": objects
+    });
+
+    // Perform RDP Line Simplication
+    const rdpPoints = [];
+    const total = seedPoints.length;
+    const start = seedPoints[0];
+    const end = seedPoints[total - 1];
+    rdpPoints.push(start);
+    rdp(0, total - 1, seedPoints, rdpPoints);
+    rdpPoints.push(end);
+
+    // Drawing simplified path
+    styleSet();
+
+    beginShape();
+    for (let v of rdpPoints) {
+        vertex(v.x, v.y);
+    }
+    endShape();
+
+    x = rdpPoints[rdpPoints.length - 1].x;
+    y = rdpPoints[rdpPoints.length - 1].y;
+
+    seedPath = [];
+    // Converting to SketchRNN states
+    for (let i = 1; i < rdpPoints.length; i++) {
+        let strokePath = {
+            dx: rdpPoints[i].x - rdpPoints[i - 1].x,
+            dy: rdpPoints[i].y - rdpPoints[i - 1].y,
+            pen: 'down'
+        };
+        seedPath.push(strokePath);
+    }
+
+    personDrawingModel.generate(seedPath, gotStroke);
+}
+
+function styleSet() {
+    noFill();
+    stroke(0);
+    strokeWeight(3);
+
+    pg.noFill();
+    pg.stroke(0);
+    pg.strokeWeight(3);
+
+    buffer.noFill();
+    buffer.stroke(0);
+    buffer.strokeWeight(3);
+
+    output.noFill();
+    output.stroke(0);
+    output.strokeWeight(3);
+
+    if (idea_state) {
+        stroke('red');
+        pg.stroke('red');
+    }
 }
