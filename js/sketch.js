@@ -90,7 +90,7 @@ function setup() {
     floor_object = category.FloorObject;
     all_object = sky_object.concat(air_object, floor_object);
 
-    //initialRec();
+    initialRec();
 
     idea();
 }
