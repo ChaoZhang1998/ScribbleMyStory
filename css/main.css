@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Patrick+Hand");
+
 * {
     box-sizing: border-box;
 }
@@ -13,7 +15,8 @@ body {
     width: 100%;
     position: absolute;
     user-select: none;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Patrick Hand', monospace;
+    text-align: center;
 }
 
 button {
@@ -24,24 +27,33 @@ button {
 
 .header-wrapper {
     background-color: #ffd139;
-    box-shadow: 0px 5px 0px 1px rgba(0, 0, 0, 0.15);
-    padding: 22px 50px 22px 22px;
+    box-shadow: 0px 5px 0px 0px rgba(0, 0, 0, 0.15);
+    padding: 22px 22px 22px 22px;
     width: 100%;
-    height: 65px;
+    height: 85px;
     z-index: 10000;
+}
+
+.header-text {
+    font-family: 'luckiest guy';
+    font-size: 32px;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    margin-top: 10px;
 }
 
 #canvas-wrapper {
     background-color: white;
     width: 100%;
     position: absolute;
-    top: 70px;
+    top: 90px;
     bottom: 0px;
 }
 
 .header-buttons {
     right: 15px;
-    top: 12px;
+    top: 20px;
     position: absolute;
 }
 
@@ -67,7 +79,7 @@ button {
     background-repeat: no-repeat;
     background-size: 94px 339px;
     background-position: 0 0;
-    font-family: 'Roboto Mono', sans-serif;
+    font-family: 'Patrick Hand', sans-serif;
     font-weight: normal;
     font-size: 18px;
     text-align: center;
@@ -124,11 +136,6 @@ button {
     background-position: -86px 0;
 }
 
-.header-text {
-    color: rgba(0, 0, 0, 0.4);
-    display: inline-block;
-}
-
 #speechbubble-wrapper {
     position: absolute;
     bottom: 22px;
@@ -142,7 +149,7 @@ button {
     min-width: 50px;
     border-radius: 5px;
     display: inline-block;
-    font-size: 17px;
+    font-size: 24px;
     letter-spacing: 1px;
     padding: 10px 16px;
 }
@@ -161,7 +168,7 @@ button {
 
 #story-wrapper {
     position: absolute;
-    top: 100px;
+    top: 120px;
     left: 10px;
     text-align: left;
     width: 100%;
@@ -173,9 +180,14 @@ button {
     min-width: 50px;
     border-radius: 5px;
     display: inline-block;
-    font-size: 12px;
+    font-size: 18px;
     letter-spacing: 1px;
     padding: 10px 16px;
+}
+
+#machine-story p {
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .splashscreen-button {
@@ -214,4 +226,110 @@ button {
 
 .button.button-large span.center {
     float: none;
+}
+
+.button-wrapper a {
+    position: relative;
+    width: 100%;
+    padding-top: 25.92%;
+    display: block;
+    background-size: 100% 100%;
+    font-family: 'luckiest guy';
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+a.background-button {
+    background-image: url(../png/yellow-shadow.png);
+}
+
+a.background-button::after {
+    content: attr(title);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    background-image: url(../png/yellow-top.png);
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+a.background-button:hover::after {
+    -webkit-transform: translate(2.5%, 10%);
+    transform: translate(2.5%, 10%);
+    text-shadow: 2px 2px 1px white;
+    color: black;
+}
+
+.button-wrapper {
+    width: 355px;
+    display: inline-block;
+    margin: 20px;
+}
+
+.index-title {
+    font-family: 'luckiest guy';
+    font-size: 100px;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    margin-top: 10%;
+    margin-bottom: 5%;
+    text-shadow: 4px 4px 1px #d8d8d8;
+}
+
+.index-title p {
+    margin: 0;
+}
+
+.feedback-button-container {
+    position: absolute;
+    bottom: 120px;
+    left: 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.feedback-button-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.feedback-button-wrapper a span {
+    background: #FFF;
+    display: block;
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: 2px solid #000;
+}
+
+.feedback-button-wrapper a:active {
+    top: 4px;
+    padding-bottom: 0px;
+    box-shadow: 0 1px 0 #000;
+}
+
+.feedback-button-wrapper a:hover {
+    box-shadow: 0 2px 0 #000, 0 2px 0px 2px #ffd139;
+  }
+
+.feedback-button-wrapper a {
+    position: relative;
+    float: left;
+    font: normal 22px/25px "Patrick Hand", sans-serif;
+    margin-right: 10px;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-radius: 5px;
+    box-shadow: 0 2px 0 #000;
+    transition: padding 0.1s, box-shadow 0.1s, top 0.1s;
+    background-image: url('data:image/gif;base64,R0lGODlhBAAEAIABAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjEgNjQuMTQwOTQ5LCAyMDEwLzEyLzA3LTEwOjU3OjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1LjEgV2luZG93cyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5NUY1OENCRDdDMDYxMUUyOTEzMEE1MEM5QzM0NDVBMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5NUY1OENCRTdDMDYxMUUyOTEzMEE1MEM5QzM0NDVBMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjk1RjU4Q0JCN0MwNjExRTI5MTMwQTUwQzlDMzQ0NUEzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjk1RjU4Q0JDN0MwNjExRTI5MTMwQTUwQzlDMzQ0NUEzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAQAAAQAsAAAAAAQABAAAAgYEEpdoeQUAOw==');
 }

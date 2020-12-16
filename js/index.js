@@ -18,7 +18,7 @@ function preload() {
 }
 
 function setup() {
-    canvas = createCanvas(windowWidth, 2 * windowHeight / 3);
+    canvas = createCanvas(windowWidth, 1 * windowHeight / 4);
     canvas.parent('index-canvas');
 
     background(255);
@@ -37,7 +37,7 @@ function startDrawing() {
     background(255);
     // Start in the middle
     x = width / 2;
-    y = 3 * height / 4;
+    y = height / 2;
     model.reset();
     // Generate the first stroke path
     model.generate(gotStroke);
